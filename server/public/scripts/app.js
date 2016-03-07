@@ -1,7 +1,8 @@
 //create a global counter variable that will reference each student
 var counter = 0;
-var maxPeople = 0;
-
+var maxPeople = 0; //total length of the array
+var kappaStudent = {}; //will store the entire kappaStudent information that is returned from the ajax call
+var timer;
 $(document).ready(function(){
     $.ajax({
       type: "GET",
@@ -10,64 +11,72 @@ $(document).ready(function(){
         appendDom(data);
       }
   });//End Ajax call
+  //Append the buttons to the DOM
+  $('.navigation').append('<button type="button" class="previous btn btn-primary btn-large">Previous</button>');
+  $('.navigation').append('<button type="button" class="next btn btn-primary btn-large">Next</button>');
+  //Listeners for the buttons
+  $('.navigation').on('click', '.next', nextPerson);
+  $('.navigation').on('click', '.previous', prevPerson);
 
-  $('.container').append('<button class="previous">Previous</button>');
-  $('.container').append('<button class="next">Next</button>');
-
-  $('.container').on('click', '.next', nextPerson);
-  $('.container').on('click', '.previous', prevPerson);
 });
-    //Append to the DOM the person class and the next and previous buttons
+//Initial load to the dom and set the data from the ajax call to the global variable
 function appendDom(person){
+    //start the interval timer
+    timer = setInterval(createTimer, 10000);
+    //stores the kappa array into the kappaStudent
+    kappaStudent = person.kappa;
 
-    var kappaStudent = person.kappa;
-      $('.container').append('<div class="person'+counter+'"></div>');
+      $('.peopleContainer').append('<div class="person"></div>');
       //load first Kappa Student
-      var $el = $('.container').children().last();
-      $el.append('<p>Name: ' + kappaStudent[counter].name + '</p>');
-      $el.append('<p>Location: ' + kappaStudent[counter].location + '</p>');
-      $el.append('<p>Spirit Animal: ' + kappaStudent[counter].spirit_animal + '</p>');
-      $el.append('<p>Shoutout: ' + kappaStudent[counter].shoutout + '</p>');
-
-    for (var i = 1; i < kappaStudent.length; i++) {
-      $('.container').append('<div class="person'+i+'"></div>');
-      //load first Kappa Student
-      var $el = $('.container').children().last();
-      $el.append('<p>Name: ' + kappaStudent[i].name + '</p>').hide();
-      $el.append('<p>Location: ' + kappaStudent[i].location + '</p>').hide();
-      $el.append('<p>Spirit Animal: ' + kappaStudent[i].spirit_animal + '</p>').hide();
-      $el.append('<p>Shoutout: ' + kappaStudent[i].shoutout + '</p>').hide();
-    }
-
+      var $el = $('.peopleContainer').children().last();
+      $el.append('<p class="lead"><strong>Name:</strong> ' + kappaStudent[counter].name + '</p>');
+      $el.append('<p class="lead"><strong>Location:</strong> ' + kappaStudent[counter].location + '</p>');
+      $el.append('<p class="lead"><strong>Spirit Animal:</strong> ' + kappaStudent[counter].spirit_animal + '</p>');
+      $el.append('<p class="lead"><strong>Shoutout:</strong> ' + kappaStudent[counter].shoutout + '</p>');
+      //sets a reference to the number of people and minus one to account for zero index
     maxPeople = kappaStudent.length - 1;
-    console.log(maxPeople);
-}
 
+}
+//Next Person Button
 function nextPerson(){
-  if(counter < maxPeople){
-    $('.person'+counter).hide();
-    counter++;
-    $('.person'+counter).show();
-  }
+  //Check to see if we have reached the last person and if so start the counter back to zero
   if(counter >= maxPeople){
-    $('.person'+counter).hide();
+    $('.person').fadeOut("fast",function(){$(this).remove();});//remove current person from the DOM
     counter = 0;
-    $('.person'+counter).show();
+  }else{//if we havent reached the last, remove current person and increase counter variable by one
+    $('.person').fadeOut("fast",function(){$(this).remove();});
+    counter++;
   }
-  console.log("Count: " + counter);
+  clearInterval(timer);//clear the timer and reset it
+  changePerson();//call the changePerson function to move on to the next
+}
+//Previous Button
+function prevPerson(){
+  //check to see if we are at the first person
+  if(counter == 0){
+    $('.person').fadeOut("fast",function(){$(this).remove();}); //if we are remove current person and set the counter to the last person which is maxPeople
+    counter = maxPeople;
+  }
+  else{
+    $('.person').fadeOut("fast",function(){$(this).remove();});//otherwise remove current person and decrease counter by one
+    counter--;
+  }
+  clearInterval(timer);//cleaer the timer
+  changePerson();//call the changerPerson fuction to move to the previous person
 }
 
-function prevPerson(){
-  if(counter < maxPeople){
-    $('.person'+counter).hide();
-    counter--;
-    $('.person'+counter).show();
-  }
-  if(counter == 0){
-    $('.person'+counter).hide();
-    counter = maxPeople;
-    $('.person'+counter).show();
-    counter--;
-  }
-  console.log("Count: " + counter);
+//Function to change the DOM when the Previous and Next Button are called
+function changePerson(){
+  $('.peopleContainer').append('<div class="person"></div>');
+  //Adds the next or previous person
+  var $el = $('.peopleContainer').children().last();
+  $el.append('<p class="lead"><strong>Name:</strong> ' + kappaStudent[counter].name + '</p>').hide().fadeIn();
+  $el.append('<p class="lead"><strong>Location:</strong> ' + kappaStudent[counter].location + '</p>').hide().fadeIn();
+  $el.append('<p class="lead"><strong>Spirit Animal:</strong> ' + kappaStudent[counter].spirit_animal + '</p>').hide().fadeIn();
+  $el.append('<p class="lead"><strong>Shoutout:</strong> ' + kappaStudent[counter].shoutout + '</p>').hide().fadeIn();
+  timer = setInterval(createTimer, 10000); //recalls the setInterval Timer once the new person is added
+}
+//Calls the nextPerson function after 10 seconds 
+function createTimer(){
+  nextPerson();
 }

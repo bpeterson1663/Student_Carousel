@@ -1,0 +1,42 @@
+body{
+  background-color: #EFECCA;
+}
+.container h1{
+  color: #E6E2AF;
+}
+p{
+  color: #E6E2AF;
+}
+.next{
+  margin-left: 20px;
+
+}
+.previous{
+  margin-right: 20px;
+
+}
+.mainHeader{
+    background-color: #002F2F;
+}
+.container{
+  text-align: center;
+  position: relative;
+}
+.navigation{
+  text-align: center;
+}
+.peopleContainer{
+  width: 500px;
+}
+.person{
+  padding:10px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 10px;
+  position: relative;
+  background-color: #046380;
+  box-shadow: 10px 10px 5px #888888;
+}
+.logo{
+  position: absolute;
+}
