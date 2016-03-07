@@ -2,7 +2,7 @@
 var counter = 0;
 var maxPeople = 0; //total length of the array
 var kappaStudent = {}; //will store the entire kappaStudent information that is returned from the ajax call
-var timer;
+var timer;//stores the interval timer to be able to reset it if the next button gets caled
 $(document).ready(function(){
     $.ajax({
       type: "GET",
@@ -41,10 +41,10 @@ function appendDom(person){
 function nextPerson(){
   //Check to see if we have reached the last person and if so start the counter back to zero
   if(counter >= maxPeople){
-    $('.person').fadeOut("fast",function(){$(this).remove();});//remove current person from the DOM
+    $('.person').fadeOut("slow",function(){$(this).remove();});//remove current person from the DOM
     counter = 0;
   }else{//if we havent reached the last, remove current person and increase counter variable by one
-    $('.person').fadeOut("fast",function(){$(this).remove();});
+    $('.person').fadeOut("slow",function(){$(this).remove();});
     counter++;
   }
   clearInterval(timer);//clear the timer and reset it
@@ -54,11 +54,11 @@ function nextPerson(){
 function prevPerson(){
   //check to see if we are at the first person
   if(counter == 0){
-    $('.person').fadeOut("fast",function(){$(this).remove();}); //if we are remove current person and set the counter to the last person which is maxPeople
+    $('.person').fadeOut("slow",function(){$(this).remove();}); //if we are remove current person and set the counter to the last person which is maxPeople
     counter = maxPeople;
   }
   else{
-    $('.person').fadeOut("fast",function(){$(this).remove();});//otherwise remove current person and decrease counter by one
+    $('.person').fadeOut("slow",function(){$(this).remove();});//otherwise remove current person and decrease counter by one
     counter--;
   }
   clearInterval(timer);//cleaer the timer
@@ -70,13 +70,13 @@ function changePerson(){
   $('.peopleContainer').append('<div class="person"></div>');
   //Adds the next or previous person
   var $el = $('.peopleContainer').children().last();
-  $el.append('<p class="lead"><strong>Name:</strong> ' + kappaStudent[counter].name + '</p>').hide().fadeIn();
-  $el.append('<p class="lead"><strong>Location:</strong> ' + kappaStudent[counter].location + '</p>').hide().fadeIn();
-  $el.append('<p class="lead"><strong>Spirit Animal:</strong> ' + kappaStudent[counter].spirit_animal + '</p>').hide().fadeIn();
-  $el.append('<p class="lead"><strong>Shoutout:</strong> ' + kappaStudent[counter].shoutout + '</p>').hide().fadeIn();
+  $el.append('<p class="lead"><strong>Name:</strong> ' + kappaStudent[counter].name + '</p>').hide().fadeIn("slow");
+  $el.append('<p class="lead"><strong>Location:</strong> ' + kappaStudent[counter].location + '</p>').hide().fadeIn("slow");
+  $el.append('<p class="lead"><strong>Spirit Animal:</strong> ' + kappaStudent[counter].spirit_animal + '</p>').hide().fadeIn("slow");
+  $el.append('<p class="lead"><strong>Shoutout:</strong> ' + kappaStudent[counter].shoutout + '</p>').hide().fadeIn("slow");
   timer = setInterval(createTimer, 10000); //recalls the setInterval Timer once the new person is added
 }
-//Calls the nextPerson function after 10 seconds 
+//Calls the nextPerson function after 10 seconds
 function createTimer(){
   nextPerson();
 }
