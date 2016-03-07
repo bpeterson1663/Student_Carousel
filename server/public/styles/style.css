@@ -40,3 +40,21 @@ p{
 .logo{
   position: absolute;
 }
+.progress{
+  height: 30px;
+  width: 500px;
+  margin: 0 auto;
+  background-color: #EFECCA;
+  border-style: none;
+}
+.eachBar{
+  width:20px;
+  height:20px;
+  border-radius: 10px;
+  background-color: #046380;;
+  display:inline-block;;
+  margin-left: 1px;
+}
+.highlighted{
+  background-color: red;
+}

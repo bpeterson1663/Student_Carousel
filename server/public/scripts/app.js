@@ -3,6 +3,7 @@ var counter = 0;
 var maxPeople = 0; //total length of the array
 var kappaStudent = {}; //will store the entire kappaStudent information that is returned from the ajax call
 var timer;//stores the interval timer to be able to reset it if the next button gets caled
+var index = 0; //global variable for progress btn-large
 $(document).ready(function(){
     $.ajax({
       type: "GET",
@@ -22,8 +23,8 @@ $(document).ready(function(){
 //Initial load to the dom and set the data from the ajax call to the global variable
 function appendDom(person){
     //start the interval timer
-    timer = setInterval(createTimer, 10000);
-    //stores the kappa array into the kappaStudent
+    timer = setInterval(nextPerson, 10000);
+    //stores the kappa array into the kappaStudent Global variable so it is accessible everywhere
     kappaStudent = person.kappa;
 
       $('.peopleContainer').append('<div class="person"></div>');
@@ -35,7 +36,16 @@ function appendDom(person){
       $el.append('<p class="lead"><strong>Shoutout:</strong> ' + kappaStudent[counter].shoutout + '</p>');
       //sets a reference to the number of people and minus one to account for zero index
     maxPeople = kappaStudent.length - 1;
+    //Display progress bar
+    for(index = 0; index <= maxPeople; index++) {
+      $('.progress').append('<div class="index'+index+' eachBar"></div>');
+      if(index == counter){
+      $('.index'+index).addClass('highlighted');
+    }
 
+  }
+  //reset index to zero for reference each individual progress bar
+  index = 0;
 }
 //Next Person Button
 function nextPerson(){
@@ -43,9 +53,15 @@ function nextPerson(){
   if(counter >= maxPeople){
     $('.person').fadeOut("slow",function(){$(this).remove();});//remove current person from the DOM
     counter = 0;
+    $('.index'+index).removeClass('highlighted');//remove current highlight progress bar
+    index = 0;
+
   }else{//if we havent reached the last, remove current person and increase counter variable by one
     $('.person').fadeOut("slow",function(){$(this).remove();});
     counter++;
+    $('.index'+index).removeClass('highlighted');
+    index++;
+
   }
   clearInterval(timer);//clear the timer and reset it
   changePerson();//call the changePerson function to move on to the next
@@ -56,10 +72,15 @@ function prevPerson(){
   if(counter == 0){
     $('.person').fadeOut("slow",function(){$(this).remove();}); //if we are remove current person and set the counter to the last person which is maxPeople
     counter = maxPeople;
+    $('.index'+index).removeClass('highlighted');
+    index = maxPeople;
+
   }
   else{
     $('.person').fadeOut("slow",function(){$(this).remove();});//otherwise remove current person and decrease counter by one
     counter--;
+    $('.index'+index).removeClass('highlighted');
+    index--;
   }
   clearInterval(timer);//cleaer the timer
   changePerson();//call the changerPerson fuction to move to the previous person
@@ -74,8 +95,14 @@ function changePerson(){
   $el.append('<p class="lead"><strong>Location:</strong> ' + kappaStudent[counter].location + '</p>').hide().fadeIn("slow");
   $el.append('<p class="lead"><strong>Spirit Animal:</strong> ' + kappaStudent[counter].spirit_animal + '</p>').hide().fadeIn("slow");
   $el.append('<p class="lead"><strong>Shoutout:</strong> ' + kappaStudent[counter].shoutout + '</p>').hide().fadeIn("slow");
-  timer = setInterval(createTimer, 10000); //recalls the setInterval Timer once the new person is added
+  timer = setInterval(nextPerson, 10000); //recalls the setInterval Timer once the new person is added
+  //if index and counter are the same add highlighted class
+  if(index == counter){
+    $('.index'+index).addClass('highlighted');
+  }
+
 }
+
 //Calls the nextPerson function after 10 seconds
 function createTimer(){
   nextPerson();
